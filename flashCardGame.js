@@ -2,8 +2,6 @@ var inq = require('inquirer');
 var basicCard = require("./BasicCard.js");
 var clozeCard = require("./ClozeCard.js");
 
-// var gameAns = [];
-
 //##############################
 
 var startGame = () => {
@@ -33,7 +31,7 @@ var gameCardBuilder = () => {
         message: "Would you like to create a Basic Flashcard='Yes' or a Cloze Flashcard= 'NO':",
         name: "confirm",
         default: true
-    }]).then( (ans)=> {
+    }]).then((ans) => {
 
         if (ans.confirm) {
             basicGame();
@@ -51,7 +49,7 @@ var gameOption = () => {
         message: "What game do you want to play Basic Flash Cards='Yes' or a Cloze Flash Cards='NO':",
         name: "confirm",
         default: true
-    }]).then((ans)=> {
+    }]).then((ans) => {
 
         if (ans.confirm) {
             gameDisplay(cardsArrBasic, "basic");
@@ -64,8 +62,8 @@ var gameOption = () => {
 
 //##############################
 
-var rightAns=0;
-var wrongAns=0;
+var rightAns = 0;
+var wrongAns = 0;
 
 var gameDisplay = (arr, gType) => {
 
@@ -77,17 +75,21 @@ var gameDisplay = (arr, gType) => {
                     type: "input",
                     message: arr[count2].frontQ,
                     name: "userInput",
-                }]).then((ans)=> {
+                }]).then((ans) => {
 
-                    if (ans.userInput == arr[count2].backQ) {
+                    if (ans.userInput.toLowerCase() == arr[count2].backQ.toLowerCase()) {
                         console.log("you got it!");
                         rightAns++;
-                    }else{
+                    } else {
                         console.log("no bueno!");
                         wrongAns++;
                     }
                     count2++;
                     printBasic();
+
+                    if (count2 == arr.length) {
+                        showScore()
+                    }
 
                 });
 
@@ -104,32 +106,34 @@ var gameDisplay = (arr, gType) => {
                     type: "input",
                     message: arr[count2].partialQ,
                     name: "userInput",
-                }]).then((ans)=> {
+                }]).then((ans) => {
 
-                    if (ans.userInput == arr[count2].clozeQ) {
+                    if (ans.userInput.toLowerCase() == arr[count2].clozeQ.toLowerCase()) {
                         console.log("you got it!");
                         rightAns++;
-                    }else{
+                    } else {
                         console.log("no bueno!");
                         wrongAns++;
                     }
                     count2++;
                     printCloze();
-
+                    if (count2 == arr.length) {
+                        showScore()
+                    }
                 });
 
             }
         }
         printCloze();
-       
+
     }
-        
+
 }
 
 // ################################
 
 var cardsArrBasic = [];
-var basicGame =()=> {
+var basicGame = () => {
 
     inq.prompt([
 
@@ -144,7 +148,7 @@ var basicGame =()=> {
             name: "back"
         }
 
-    ]).then((answers)=> {
+    ]).then((answers) => {
 
         var newCard = basicCard(answers.front, answers.back);
 
@@ -160,7 +164,7 @@ var basicGame =()=> {
 //##############################
 
 var cardsArrCloze = [];
-var clozeGame = ()=> {
+var clozeGame = () => {
 
     inq.prompt([
 
@@ -175,7 +179,7 @@ var clozeGame = ()=> {
             name: "clozePart"
         }
 
-    ]).then((resp)=> {
+    ]).then((resp) => {
 
         var newCard = clozeCard(resp.fullStr, resp.clozePart);
 
@@ -197,7 +201,7 @@ var addMore = () => {
         message: "Would like to add more card:",
         name: "moreCards",
         default: false
-    }]).then((resp)=> {
+    }]).then((resp) => {
         if (resp.moreCards) {
             gameCardBuilder();
         } else {
@@ -208,16 +212,36 @@ var addMore = () => {
 
 //##############################
 
-var resetGame=()=>{
-    cardsArrBasic=[];
-    cardsArrCloze=[];
+var resetGame = () => {
+    cardsArrBasic = [];
+    cardsArrCloze = [];
 }
 
 //##############################
-var showScore=()=>{
-    console.log("Right answers score is: "+rightAns);
-    console.log("Wrong answers score is: "+wrongAns);
-    resetGame();
+var showScore = () => {
+    inq.prompt([{
+        type: "confirm",
+        message: "Want to see your score?",
+        name: "confirm",
+        default: true
+    }, {
+        type: "confirm",
+        message: "Want to play a new game?",
+        name: "newGame",
+        default: true
+    }]).then((ans) => {
+
+        console.log("Don't care here is your score");
+        console.log("Right answers score is: " + rightAns);
+        console.log("Wrong answers score is: " + wrongAns);
+        if (ans.newGame) {
+            resetGame();
+            startGame()
+        }
+
+    });
+
+
 }
 //##############################
 
