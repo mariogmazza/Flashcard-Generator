@@ -1,7 +1,4 @@
 # Flashcard-Generator
+### NodeJS game that let the user generate card to play a card game
 
-JUST RUN IT !! 
-
-IT'S A NODE APP!!
-
-GIF=(commmad line node flashCardGame.js)
+![card game](https://github.com/mariogmazza/Flashcard-Generator/blob/master/flashcard-gen.gif)
